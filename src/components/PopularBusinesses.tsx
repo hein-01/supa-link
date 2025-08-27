@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Facebook, Instagram, Bookmark, CheckCircle, Check, X, BadgeCheck, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Facebook, Instagram, MessageCircle, Bookmark, CheckCircle, Check, X, BadgeCheck, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -213,12 +213,17 @@ const PopularBusinesses = () => {
               <CardContent className="flex-1 p-3 flex flex-col justify-between">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-foreground">
-                      {business.starting_price ? `From ${business.starting_price}` : 'Price on request'}
-                    </span>
+                    <div className="text-sm text-muted-foreground">
+                      {business.starting_price ? (
+                        <span>
+                          <span className="text-primary">From</span> {business.starting_price}
+                        </span>
+                      ) : 'Price on request'}
+                    </div>
                     <div className="flex items-center gap-2">
                       <Facebook className="w-4 h-4 text-blue-600" />
                       <Instagram className="w-4 h-4 text-pink-600" />
+                      <MessageCircle className="w-4 h-4 text-green-600" />
                     </div>
                   </div>
                   
