@@ -213,13 +213,13 @@ const PopularBusinesses = () => {
               <CardContent className="flex-1 p-3 flex flex-col justify-between">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-foreground">
+                      {business.starting_price ? `From ${business.starting_price}` : 'Price on request'}
+                    </span>
                     <div className="flex items-center gap-2">
                       <Facebook className="w-4 h-4 text-blue-600" />
                       <Instagram className="w-4 h-4 text-pink-600" />
                     </div>
-                    <span className="text-sm font-medium text-foreground">
-                      {business.starting_price ? `From ${business.starting_price}` : 'Price on request'}
-                    </span>
                   </div>
                   
                   <div className="flex items-center gap-2">
