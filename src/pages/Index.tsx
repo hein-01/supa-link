@@ -30,7 +30,7 @@ const Index = () => {
       {/* Hero Banner Section */}
       <section className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-blue-600 py-20 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-8 max-w-4xl mx-auto leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-8 max-w-4xl mx-auto leading-tight">
             Exclusively businesses with both online and in-store sales
           </h1>
           
