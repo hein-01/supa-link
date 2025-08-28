@@ -83,9 +83,8 @@ const Index = () => {
               className="flex-1 border-0 text-gray-600 placeholder-gray-400 focus-visible:ring-0"
             />
             
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md flex items-center space-x-2">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center justify-center">
               <Search className="h-4 w-4" />
-              <span>Search</span>
             </Button>
           </div>
         </div>
