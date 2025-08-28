@@ -63,7 +63,7 @@ const Index = () => {
           {heroBackgroundsMobile.map((bg, index) => (
             <div
               key={`mobile-${index}`}
-              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 block md:hidden ${
+              className={`absolute inset-0 bg-contain bg-center bg-no-repeat transition-opacity duration-1000 block md:hidden ${
                 index === currentBgIndex ? 'opacity-100' : 'opacity-0'
               }`}
               style={{ backgroundImage: `url(${bg})` }}
