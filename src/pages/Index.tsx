@@ -15,6 +15,9 @@ import 'swiper/css/navigation';
 import heroBg1 from "@/assets/hero-bg-1.jpg";
 import heroBg2 from "@/assets/hero-bg-2.jpg";
 import heroBg3 from "@/assets/hero-bg-3.jpg";
+import heroBgMobile1 from "@/assets/hero-bg-mobile-1.jpg";
+import heroBgMobile2 from "@/assets/hero-bg-mobile-2.jpg";
+import heroBgMobile3 from "@/assets/hero-bg-mobile-3.jpg";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +25,7 @@ const Index = () => {
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
   const heroBackgrounds = [heroBg1, heroBg2, heroBg3];
+  const heroBackgroundsMobile = [heroBgMobile1, heroBgMobile2, heroBgMobile3];
   
   const categories = [
     { value: "product", label: "Product" },
@@ -45,10 +49,21 @@ const Index = () => {
       <section className="relative py-20 px-4 overflow-hidden">
         {/* Background Images Slider */}
         <div className="absolute inset-0">
+          {/* Desktop Background Images */}
           {heroBackgrounds.map((bg, index) => (
             <div
-              key={index}
-              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+              key={`desktop-${index}`}
+              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 hidden md:block ${
+                index === currentBgIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{ backgroundImage: `url(${bg})` }}
+            />
+          ))}
+          {/* Mobile Background Images */}
+          {heroBackgroundsMobile.map((bg, index) => (
+            <div
+              key={`mobile-${index}`}
+              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 block md:hidden ${
                 index === currentBgIndex ? 'opacity-100' : 'opacity-0'
               }`}
               style={{ backgroundImage: `url(${bg})` }}
