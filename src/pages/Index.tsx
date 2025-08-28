@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ShoppingBag, Compass } from "lucide-react";
@@ -12,10 +12,16 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import 'swiper/css/navigation';
+import heroBg1 from "@/assets/hero-bg-1.jpg";
+import heroBg2 from "@/assets/hero-bg-2.jpg";
+import heroBg3 from "@/assets/hero-bg-3.jpg";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("product");
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
+
+  const heroBackgrounds = [heroBg1, heroBg2, heroBg3];
   
   const categories = [
     { value: "product", label: "Product" },
@@ -23,13 +29,34 @@ const Index = () => {
     { value: "business", label: "Business" }
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBgIndex((prev) => (prev + 1) % heroBackgrounds.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Banner Section */}
-      <section className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-blue-600 py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="relative py-20 px-4 overflow-hidden">
+        {/* Background Images Slider */}
+        <div className="absolute inset-0">
+          {heroBackgrounds.map((bg, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
+                index === currentBgIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{ backgroundImage: `url(${bg})` }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
+        <div className="container mx-auto text-center relative z-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-8 max-w-4xl mx-auto leading-tight">
             Exclusively businesses with both online and in-store sales
           </h1>
