@@ -122,8 +122,8 @@ export const Navbar = () => {
               </Badge>
             </div>
 
-            {/* Dashboard Sidebar Trigger - Only show on dashboard */}
-            {location.pathname === '/dashboard' && (
+            {/* Dashboard Sidebar Trigger - Show for authenticated users */}
+            {user && (
               <Button 
                 onClick={() => {
                   // Find and click the actual sidebar trigger in the dashboard
@@ -172,8 +172,8 @@ export const Navbar = () => {
               </Badge>
             </div>
             
-            {/* Dashboard Sidebar Trigger for Mobile - Only show on dashboard */}
-            {location.pathname === '/dashboard' && (
+            {/* Dashboard Sidebar Trigger for Mobile - Show for authenticated users */}
+            {user && (
               <Button 
                 onClick={() => {
                   // Find and click the actual sidebar trigger in the dashboard
