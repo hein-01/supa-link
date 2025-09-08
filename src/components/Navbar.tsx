@@ -14,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import AuthModal from "./AuthModal";
 
 export const Navbar = () => {
@@ -124,20 +125,9 @@ export const Navbar = () => {
 
             {/* Dashboard Sidebar Trigger - Show for authenticated users */}
             {user && (
-              <Button 
-                onClick={() => {
-                  // Find and click the actual sidebar trigger in the dashboard
-                  const sidebarTrigger = document.querySelector('[data-sidebar="trigger"]');
-                  if (sidebarTrigger) {
-                    (sidebarTrigger as HTMLElement).click();
-                  }
-                }}
-                size="sm"
-                variant="ghost"
-                className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
-              >
+              <SidebarTrigger className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors">
                 <Menu className="h-4 w-4" />
-              </Button>
+              </SidebarTrigger>
             )}
           </div>
 
@@ -174,20 +164,9 @@ export const Navbar = () => {
             
             {/* Dashboard Sidebar Trigger for Mobile - Show for authenticated users */}
             {user && (
-              <Button 
-                onClick={() => {
-                  // Find and click the actual sidebar trigger in the dashboard
-                  const sidebarTrigger = document.querySelector('[data-sidebar="trigger"]');
-                  if (sidebarTrigger) {
-                    (sidebarTrigger as HTMLElement).click();
-                  }
-                }}
-                size="sm"
-                variant="ghost"
-                className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
-              >
+              <SidebarTrigger className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors">
                 <Menu className="h-4 w-4" />
-              </Button>
+              </SidebarTrigger>
             )}
           </div>
         </div>

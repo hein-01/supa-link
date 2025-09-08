@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { GlobalSidebar } from "@/components/GlobalSidebar";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BusinessDetail from "./pages/BusinessDetail";
@@ -29,33 +31,40 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/businesses" element={<BusinessDirectory />} />
-          <Route path="/find-shops" element={<FindShops />} />
-          <Route path="/business/:id" element={<BusinessDetail />} />
-          <Route path="/list-business" element={<ListBusiness />} />
-          <Route path="/auth/signin" element={<Auth />} />
-          <Route path="/auth/signup" element={<Auth />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/@admin/login" element={<AdminAuth />} />
-          <Route path="/@admin/signup" element={<AdminAuth />} />
-          <Route path="/@admin/callback" element={<AdminAuthCallback />} />
-          <Route path="/admin/dashboard" element={
-            <ProtectedAdminRoute>
-              <AdminDashboard />
-            </ProtectedAdminRoute>
-          } />
-          <Route path="/list-&-get-pos-website" element={<ListAndGetPOS />} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <UserDashboard />
-            </ProtectedRoute>
-          } />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <MobileNavBar />
+        <SidebarProvider>
+          <div className="min-h-screen flex w-full">
+            <GlobalSidebar />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/businesses" element={<BusinessDirectory />} />
+                <Route path="/find-shops" element={<FindShops />} />
+                <Route path="/business/:id" element={<BusinessDetail />} />
+                <Route path="/list-business" element={<ListBusiness />} />
+                <Route path="/auth/signin" element={<Auth />} />
+                <Route path="/auth/signup" element={<Auth />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
+                <Route path="/@admin/login" element={<AdminAuth />} />
+                <Route path="/@admin/signup" element={<AdminAuth />} />
+                <Route path="/@admin/callback" element={<AdminAuthCallback />} />
+                <Route path="/admin/dashboard" element={
+                  <ProtectedAdminRoute>
+                    <AdminDashboard />
+                  </ProtectedAdminRoute>
+                } />
+                <Route path="/list-&-get-pos-website" element={<ListAndGetPOS />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <UserDashboard />
+                  </ProtectedRoute>
+                } />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+          </div>
+          <MobileNavBar />
+        </SidebarProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
