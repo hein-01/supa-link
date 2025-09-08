@@ -34,7 +34,7 @@ const App = () => (
         <SidebarProvider>
           <div className="min-h-screen flex w-full">
             <GlobalSidebar />
-            <main className="flex-1">
+            <main className="flex-1 pb-[75px] md:pb-0">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/businesses" element={<BusinessDirectory />} />
