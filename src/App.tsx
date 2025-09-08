@@ -31,10 +31,44 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <SidebarProvider>
-          <div className="min-h-screen flex w-full">
-            <GlobalSidebar />
-            <main className="flex-1 pb-[75px] md:pb-0">
+        <div className="min-h-screen">
+          {/* Desktop Layout */}
+          <div className="hidden md:flex w-full min-h-screen">
+            <SidebarProvider>
+              <GlobalSidebar />
+              <main className="flex-1">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/businesses" element={<BusinessDirectory />} />
+                  <Route path="/find-shops" element={<FindShops />} />
+                  <Route path="/business/:id" element={<BusinessDetail />} />
+                  <Route path="/list-business" element={<ListBusiness />} />
+                  <Route path="/auth/signin" element={<Auth />} />
+                  <Route path="/auth/signup" element={<Auth />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/@admin/login" element={<AdminAuth />} />
+                  <Route path="/@admin/signup" element={<AdminAuth />} />
+                  <Route path="/@admin/callback" element={<AdminAuthCallback />} />
+                  <Route path="/admin/dashboard" element={
+                    <ProtectedAdminRoute>
+                      <AdminDashboard />
+                    </ProtectedAdminRoute>
+                  } />
+                  <Route path="/list-&-get-pos-website" element={<ListAndGetPOS />} />
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <UserDashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+            </SidebarProvider>
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="md:hidden min-h-screen pb-[75px]">
+            <main className="w-full">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/businesses" element={<BusinessDirectory />} />
@@ -58,13 +92,12 @@ const App = () => (
                     <UserDashboard />
                   </ProtectedRoute>
                 } />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
+            <MobileNavBar />
           </div>
-          <MobileNavBar />
-        </SidebarProvider>
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
