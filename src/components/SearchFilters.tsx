@@ -123,7 +123,7 @@ export const SearchFilters = ({
             </div>
             
             {/* Location and Filter buttons */}
-            <div className="flex gap-1">
+            <div className="flex gap-1 mb-1">
               <LocationsModal key={`locations-${resetVersion}`} onLocationChange={onLocationChange}>
                 <Button 
                   type="button" 
