@@ -294,8 +294,32 @@ export default function FindShops() {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 pt-24 pb-8">
-        <div className="-mx-4 md:mx-0">
+      {/* Mobile SearchFilters - positioned directly below navbar */}
+      <div className="md:hidden">
+        <SearchFilters
+          onSearchChange={setSearchTerm}
+          onCategoryChange={setSelectedCategory}
+          onLocationChange={setLocationFilter}
+          onProductChange={(products) => {
+            if (typeof products === 'string') {
+              setSelectedProducts(products === 'all' ? [] : [products]);
+            } else {
+              setSelectedProducts(products);
+            }
+          }}
+          onDeliveryFilter={(type) => {
+            const filters = type ? type.split(',').filter(f => f.trim()) : [];
+            setDeliveryFilter(filters);
+          }}
+          categories={categoryNames}
+          initialSearchTerm={searchTerm}
+          initialCategory={selectedCategory}
+        />
+      </div>
+      
+      <main className="container mx-auto px-4 pt-4 md:pt-24 pb-8">
+        {/* Desktop SearchFilters - inside main content */}
+        <div className="hidden md:block">
           <SearchFilters
             onSearchChange={setSearchTerm}
             onCategoryChange={setSelectedCategory}
