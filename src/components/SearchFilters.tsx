@@ -102,7 +102,7 @@ export const SearchFilters = ({
           </div>
 
           {/* Mobile layout */}
-          <div className="md:hidden space-y-2">
+          <div className="md:hidden space-y-1">
             {/* Search input with search button */}
             <div className="flex w-full">
               <form onSubmit={handleSearchSubmit} className="relative flex-1">
