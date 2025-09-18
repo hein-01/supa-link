@@ -102,15 +102,15 @@ export const SearchFilters = ({
           </div>
 
           {/* Mobile layout */}
-          <div className="md:hidden space-y-3">
+          <div className="md:hidden space-y-2">
             {/* Search input with search button */}
-            <div className="flex">
+            <div className="flex w-full">
               <form onSubmit={handleSearchSubmit} className="relative flex-1">
                 <Input
                   placeholder="Search businesses..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="border-2 shadow-sm hover:shadow-md focus:shadow-lg focus:border-purple-500 focus-visible:ring-2 focus-visible:ring-purple-500/20 transition-all duration-200 rounded-r-none border-r-0"
+                  className="border-2 shadow-sm hover:shadow-md focus:shadow-lg focus:border-purple-500 focus-visible:ring-2 focus-visible:ring-purple-500/20 transition-all duration-200 rounded-r-none border-r-0 placeholder:text-sm w-full"
                 />
               </form>
               <Button 
@@ -123,7 +123,7 @@ export const SearchFilters = ({
             </div>
             
             {/* Location and Filter buttons */}
-            <div className="flex gap-1 mb-1">
+            <div className="flex gap-1 w-full">
               <LocationsModal key={`locations-${resetVersion}`} onLocationChange={onLocationChange}>
                 <Button 
                   type="button" 
@@ -158,7 +158,7 @@ export const SearchFilters = ({
           </div>
           
           {/* Centered delivery and filter buttons */}
-          <div className="flex gap-1">
+          <div className="flex gap-1 w-full md:w-auto">
             <Button 
               type="button" 
               variant="outline" 
