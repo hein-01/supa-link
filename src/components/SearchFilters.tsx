@@ -41,7 +41,7 @@ export const SearchFilters = ({
   };
 
   return (
-    <Card className="p-6 mb-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-background to-muted/30">
+    <Card className="p-6 mb-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-background to-muted/30 md:mx-0 mx-0 md:rounded-lg rounded-none md:mt-0 mt-0 w-full">
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-lg font-semibold text-primary">
           <Filter className="h-5 w-5" />
