@@ -295,25 +295,27 @@ export default function FindShops() {
       <Navbar />
       
       <main className="container mx-auto px-4 pt-24 pb-8">
-        <SearchFilters
-          onSearchChange={setSearchTerm}
-          onCategoryChange={setSelectedCategory}
-          onLocationChange={setLocationFilter}
-          onProductChange={(products) => {
-            if (typeof products === 'string') {
-              setSelectedProducts(products === 'all' ? [] : [products]);
-            } else {
-              setSelectedProducts(products);
-            }
-          }}
-          onDeliveryFilter={(type) => {
-            const filters = type ? type.split(',').filter(f => f.trim()) : [];
-            setDeliveryFilter(filters);
-          }}
-          categories={categoryNames}
-          initialSearchTerm={searchTerm}
-          initialCategory={selectedCategory}
-        />
+        <div className="-mx-4 md:mx-0">
+          <SearchFilters
+            onSearchChange={setSearchTerm}
+            onCategoryChange={setSelectedCategory}
+            onLocationChange={setLocationFilter}
+            onProductChange={(products) => {
+              if (typeof products === 'string') {
+                setSelectedProducts(products === 'all' ? [] : [products]);
+              } else {
+                setSelectedProducts(products);
+              }
+            }}
+            onDeliveryFilter={(type) => {
+              const filters = type ? type.split(',').filter(f => f.trim()) : [];
+              setDeliveryFilter(filters);
+            }}
+            categories={categoryNames}
+            initialSearchTerm={searchTerm}
+            initialCategory={selectedCategory}
+          />
+        </div>
 
         <div className="mt-8">
           <div className="flex flex-wrap justify-center gap-5 max-w-[590px] md:max-w-[590px] lg:max-w-[915px] mx-auto">
