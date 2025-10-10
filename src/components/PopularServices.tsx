@@ -45,7 +45,7 @@ const PopularServices = () => {
 
   const fetchServices = async () => {
     try {
-      // Single query: Get latest 5 services with their associated businesses via join
+      // Single efficient query joining services -> business_resources -> businesses
       const { data: servicesData, error } = await supabase
         .from('services')
         .select(`
@@ -57,9 +57,9 @@ const PopularServices = () => {
           service_images,
           contact_phone,
           created_at,
-          business_resources!inner (
+          business_resources (
             business_id,
-            businesses!inner (
+            businesses (
               id,
               name,
               category,
@@ -81,56 +81,63 @@ const PopularServices = () => {
             )
           )
         `)
-        .eq('business_resources.businesses.searchable_business', true)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
       if (error) {
         console.error('Error fetching services:', error);
         return;
       }
 
-      console.log('Fetched services with businesses:', servicesData);
+      console.log('Raw services data:', servicesData);
 
-      // Transform the joined data into the expected format
-      const servicesWithBusinessData = (servicesData || []).map((service: any) => {
-        // Get the first business from the resources array
-        const businessResource = service.business_resources?.[0];
-        const business = businessResource?.businesses;
+      // Filter and transform to get only services with searchable businesses
+      const servicesWithSearchableBusinesses = (servicesData || [])
+        .map((service: any) => {
+          // Find first resource with a searchable business
+          const validResource = service.business_resources?.find((resource: any) => 
+            resource.businesses?.searchable_business === true
+          );
 
-        // Clear naming rule: Use business.name if available, otherwise use service.popular_products, fallback to 'Unnamed Service'
-        const displayName = business?.name || service.popular_products || 'Unnamed Service';
+          if (!validResource?.businesses) return null;
 
-        return {
-          id: `service_${service.service_key || service.id}_${business?.id || 'no-business'}`,
-          name: displayName,
-          business_name: business?.name,
-          description: service.services_description,
-          category: business?.category,
-          towns: business?.towns,
-          province_district: business?.province_district,
-          address: business?.address,
-          rating: business?.rating,
-          image_url: business?.image_url,
-          website: business?.website,
-          information_website: business?.information_website,
-          service_images: service.service_images,
-          product_images: business?.product_images,
-          business_options: business?.business_options,
-          base_price: null,
-          starting_price: business?.starting_price,
-          license_expired_date: business?.license_expired_date,
-          products_catalog: service.facilities,
-          facebook_page: business?.facebook_page,
-          tiktok_url: business?.tiktok_url,
-          phone: service.contact_phone || business?.phone,
-          popular_products: service.popular_products,
-        };
-      });
+          const business = validResource.businesses;
 
-      console.log('Final services with business data:', servicesWithBusinessData);
+          // Naming rule: business.name → service.popular_products → 'Unnamed Service'
+          const displayName = business.name || service.popular_products || 'Unnamed Service';
+
+          return {
+            id: `service_${service.service_key || service.id}_${business.id}`,
+            name: displayName,
+            business_name: business.name,
+            description: service.services_description,
+            category: business.category,
+            towns: business.towns,
+            province_district: business.province_district,
+            address: business.address,
+            rating: business.rating,
+            image_url: business.image_url,
+            website: business.website,
+            information_website: business.information_website,
+            service_images: service.service_images,
+            product_images: business.product_images,
+            business_options: business.business_options,
+            base_price: null,
+            starting_price: business.starting_price,
+            license_expired_date: business.license_expired_date,
+            products_catalog: service.facilities,
+            facebook_page: business.facebook_page,
+            tiktok_url: business.tiktok_url,
+            phone: service.contact_phone || business.phone,
+            popular_products: service.popular_products,
+          };
+        })
+        .filter((service) => service !== null)
+        .slice(0, 5); // Take first 5 valid services
+
+      console.log('Filtered services with businesses:', servicesWithSearchableBusinesses);
       
-      setServices(servicesWithBusinessData);
+      setServices(servicesWithSearchableBusinesses);
     } catch (error) {
       console.error('Error:', error);
     } finally {
