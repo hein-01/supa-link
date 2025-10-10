@@ -45,99 +45,94 @@ const PopularServices = () => {
 
   const fetchServices = async () => {
     try {
-      // Single efficient query joining services -> business_resources -> businesses
-      const { data: servicesData, error } = await supabase
+      // Step 1: Fetch latest 5 services directly
+      const { data: latestServices, error: servicesError } = await supabase
         .from('services')
-        .select(`
-          id,
-          service_key,
-          popular_products,
-          services_description,
-          facilities,
-          service_images,
-          contact_phone,
-          created_at,
-          business_resources (
-            business_id,
-            businesses (
-              id,
-              name,
-              category,
-              towns,
-              province_district,
-              address,
-              rating,
-              image_url,
-              website,
-              information_website,
-              product_images,
-              business_options,
-              starting_price,
-              license_expired_date,
-              facebook_page,
-              tiktok_url,
-              phone,
-              searchable_business
-            )
-          )
-        `)
+        .select('id, service_key, popular_products, services_description, facilities, service_images, contact_phone, created_at')
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(5);
 
-      if (error) {
-        console.error('Error fetching services:', error);
+      if (servicesError) {
+        console.error('Error fetching services:', servicesError);
         return;
       }
 
-      console.log('Raw services data:', servicesData);
+      console.log('Fetched latest services:', latestServices);
 
-      // Filter and transform to get only services with searchable businesses
-      const servicesWithSearchableBusinesses = (servicesData || [])
-        .map((service: any) => {
-          // Find first resource with a searchable business
-          const validResource = service.business_resources?.find((resource: any) => 
-            resource.businesses?.searchable_business === true
-          );
+      if (!latestServices || latestServices.length === 0) {
+        setServices([]);
+        return;
+      }
 
-          if (!validResource?.businesses) return null;
+      // Step 2: For each service, get business data through business_resources
+      const servicesWithBusinessData = await Promise.all(
+        latestServices.map(async (service) => {
+          // Get business_resources for this service
+          const { data: resources } = await supabase
+            .from('business_resources')
+            .select(`
+              business_id,
+              businesses!inner (
+                id,
+                name,
+                category,
+                towns,
+                province_district,
+                address,
+                rating,
+                image_url,
+                website,
+                information_website,
+                product_images,
+                business_options,
+                starting_price,
+                license_expired_date,
+                facebook_page,
+                tiktok_url,
+                phone,
+                searchable_business
+              )
+            `)
+            .eq('service_id', service.id)
+            .eq('businesses.searchable_business', true)
+            .limit(1)
+            .maybeSingle();
 
-          const business = validResource.businesses;
+          const business = resources?.businesses;
 
           // Naming rule: business.name → service.popular_products → 'Unnamed Service'
-          const displayName = business.name || service.popular_products || 'Unnamed Service';
+          const displayName = business?.name || service.popular_products || 'Unnamed Service';
 
           return {
-            id: `service_${service.service_key || service.id}_${business.id}`,
+            id: `service_${service.service_key || service.id}_${business?.id || 'no-business'}`,
             name: displayName,
-            business_name: business.name,
+            business_name: business?.name,
             description: service.services_description,
-            category: business.category,
-            towns: business.towns,
-            province_district: business.province_district,
-            address: business.address,
-            rating: business.rating,
-            image_url: business.image_url,
-            website: business.website,
-            information_website: business.information_website,
+            category: business?.category,
+            towns: business?.towns,
+            province_district: business?.province_district,
+            address: business?.address,
+            rating: business?.rating,
+            image_url: business?.image_url,
+            website: business?.website,
+            information_website: business?.information_website,
             service_images: service.service_images,
-            product_images: business.product_images,
-            business_options: business.business_options,
+            product_images: business?.product_images,
+            business_options: business?.business_options,
             base_price: null,
-            starting_price: business.starting_price,
-            license_expired_date: business.license_expired_date,
+            starting_price: business?.starting_price,
+            license_expired_date: business?.license_expired_date,
             products_catalog: service.facilities,
-            facebook_page: business.facebook_page,
-            tiktok_url: business.tiktok_url,
-            phone: service.contact_phone || business.phone,
+            facebook_page: business?.facebook_page,
+            tiktok_url: business?.tiktok_url,
+            phone: service.contact_phone || business?.phone,
             popular_products: service.popular_products,
           };
         })
-        .filter((service) => service !== null)
-        .slice(0, 5); // Take first 5 valid services
+      );
 
-      console.log('Filtered services with businesses:', servicesWithSearchableBusinesses);
-      
-      setServices(servicesWithSearchableBusinesses);
+      console.log('Services with business data:', servicesWithBusinessData);
+      setServices(servicesWithBusinessData);
     } catch (error) {
       console.error('Error:', error);
     } finally {
