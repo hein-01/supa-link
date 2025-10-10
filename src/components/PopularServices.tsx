@@ -45,79 +45,88 @@ const PopularServices = () => {
 
   const fetchServices = async () => {
     try {
-      // Fetch latest 5 services from services table with business details
-      const { data: servicesData, error: servicesError } = await supabase
+      // Single query: Get latest 5 services with their associated businesses via join
+      const { data: servicesData, error } = await supabase
         .from('services')
         .select(`
-          *,
-          category_id
+          id,
+          service_key,
+          popular_products,
+          services_description,
+          facilities,
+          service_images,
+          contact_phone,
+          created_at,
+          business_resources!inner (
+            business_id,
+            businesses!inner (
+              id,
+              name,
+              category,
+              towns,
+              province_district,
+              address,
+              rating,
+              image_url,
+              website,
+              information_website,
+              product_images,
+              business_options,
+              starting_price,
+              license_expired_date,
+              facebook_page,
+              tiktok_url,
+              phone,
+              searchable_business
+            )
+          )
         `)
+        .eq('business_resources.businesses.searchable_business', true)
         .order('created_at', { ascending: false })
         .limit(5);
-        
-      if (servicesError) {
-        console.error('Error fetching services:', servicesError);
+
+      if (error) {
+        console.error('Error fetching services:', error);
         return;
       }
 
-      console.log('Fetched services:', servicesData);
+      console.log('Fetched services with businesses:', servicesData);
 
-      // For each service, fetch corresponding business data via business_resources
-      const servicesWithBusinessData = await Promise.all(
-        (servicesData || []).map(async (service) => {
-          // Step 1: Find business_resources that offer this service
-          const { data: resourceData } = await supabase
-            .from('business_resources')
-            .select('business_id')
-            .eq('service_id', service.id)
-            .limit(1)
-            .maybeSingle();
+      // Transform the joined data into the expected format
+      const servicesWithBusinessData = (servicesData || []).map((service: any) => {
+        // Get the first business from the resources array
+        const businessResource = service.business_resources?.[0];
+        const business = businessResource?.businesses;
 
-          console.log('Resource data for service', service.id, ':', resourceData);
+        // Clear naming rule: Use business.name if available, otherwise use service.popular_products, fallback to 'Unnamed Service'
+        const displayName = business?.name || service.popular_products || 'Unnamed Service';
 
-          let businessData = null;
-          if (resourceData?.business_id) {
-            // Step 2: Get the business data using the business_id from the resource
-            const { data } = await supabase
-              .from('businesses')
-              .select('*')
-              .eq('id', resourceData.business_id)
-              .eq('searchable_business', true)
-              .maybeSingle();
-            
-            businessData = data;
-          }
-
-          console.log('Business data for service', service.id, ':', businessData);
-
-          // Combine service and business data
-          return {
-            id: String(service.service_key || service.id),
-            name: businessData?.name || 'Service',
-            business_name: businessData?.name,
-            description: service.services_description,
-            category: businessData?.category,
-            towns: businessData?.towns,
-            province_district: businessData?.province_district,
-            address: businessData?.address,
-            rating: businessData?.rating,
-            image_url: businessData?.image_url,
-            website: businessData?.website,
-            information_website: businessData?.information_website,
-            service_images: service.service_images,
-            product_images: businessData?.product_images,
-            business_options: businessData?.business_options,
-            base_price: null,
-            starting_price: businessData?.starting_price,
-            license_expired_date: businessData?.license_expired_date,
-            products_catalog: service.facilities,
-            facebook_page: businessData?.facebook_page,
-            tiktok_url: businessData?.tiktok_url,
-            phone: service.contact_phone || businessData?.phone,
-            popular_products: service.popular_products,
-          };
-        })
-      );
+        return {
+          id: `service_${service.service_key || service.id}_${business?.id || 'no-business'}`,
+          name: displayName,
+          business_name: business?.name,
+          description: service.services_description,
+          category: business?.category,
+          towns: business?.towns,
+          province_district: business?.province_district,
+          address: business?.address,
+          rating: business?.rating,
+          image_url: business?.image_url,
+          website: business?.website,
+          information_website: business?.information_website,
+          service_images: service.service_images,
+          product_images: business?.product_images,
+          business_options: business?.business_options,
+          base_price: null,
+          starting_price: business?.starting_price,
+          license_expired_date: business?.license_expired_date,
+          products_catalog: service.facilities,
+          facebook_page: business?.facebook_page,
+          tiktok_url: business?.tiktok_url,
+          phone: service.contact_phone || business?.phone,
+          popular_products: service.popular_products,
+        };
+      });
 
       console.log('Final services with business data:', servicesWithBusinessData);
       
