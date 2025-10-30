@@ -30,12 +30,12 @@ function Calendar({
         nav_button_previous: "",
         nav_button_next: "",
         table: "w-full border-collapse",
-        head_row: "w-full mb-1",
-        head_cell: "text-foreground font-bold text-sm w-9 h-9 text-center",
-        row: "w-full",
-        cell: "text-center text-sm p-0.5 relative w-9 h-9",
+        head_row: "grid grid-cols-7 w-full mb-1",
+        head_cell: "text-foreground font-semibold text-xs h-9 w-9 flex items-center justify-center",
+        row: "grid grid-cols-7 w-full",
+        cell: "text-center text-sm p-0 relative",
         day: cn(
-          "h-9 w-9 p-0 font-normal rounded-full hover:bg-accent/50 transition-colors"
+          "mx-auto h-9 w-9 inline-flex items-center justify-center p-0 font-normal rounded-full hover:bg-accent/50 transition-colors"
         ),
         day_range_end: "day-range-end",
         day_selected:
