@@ -30,16 +30,16 @@ function Calendar({
         nav_button_previous: "",
         nav_button_next: "",
         table: "w-full border-collapse",
-        head_row: "w-full mb-1",
-        head_cell: "text-foreground font-bold text-sm w-9 h-9 text-center",
-        row: "w-full",
-        cell: "text-center text-sm p-0.5 relative w-9 h-9",
+        head_row: "flex w-full mb-1",
+        head_cell: "text-foreground font-bold text-sm w-9 flex items-center justify-center",
+        row: "flex w-full mt-1",
+        cell: "text-center text-sm p-0 relative w-9 h-9 flex items-center justify-center",
         day: cn(
-          "h-9 w-9 p-0 font-normal rounded-full hover:bg-accent/50 transition-colors"
+          "h-9 w-9 p-0 font-normal rounded-full hover:bg-accent/50 transition-colors flex items-center justify-center"
         ),
         day_range_end: "day-range-end",
         day_selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-semibold rounded-full",
+          "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-semibold rounded-full",
         day_today: "bg-accent text-accent-foreground font-medium",
         day_outside: "day-outside text-muted-foreground/40 opacity-50",
         day_disabled: "text-muted-foreground/30 opacity-30 cursor-not-allowed",
