@@ -30,10 +30,10 @@ function Calendar({
         nav_button_previous: "",
         nav_button_next: "",
         table: "w-full border-collapse",
-        head_row: "flex justify-between mb-2",
-        head_cell: "text-foreground font-bold text-sm w-9 text-center",
-        row: "flex justify-between w-full mt-0.5",
-        cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        head_row: "grid grid-cols-7 gap-1 mb-2",
+        head_cell: "text-foreground font-bold text-sm w-9 h-9 flex items-center justify-center",
+        row: "grid grid-cols-7 gap-1 w-full",
+        cell: "text-center text-sm p-0 relative flex items-center justify-center",
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md"
