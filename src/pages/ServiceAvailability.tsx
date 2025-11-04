@@ -229,7 +229,7 @@ export default function ServiceAvailability(props: ServiceAvailabilityProps) {
                 <thead>
                   <tr className="bg-primary/10 text-foreground border-b border-primary/20">
                     <th className="text-left px-4 py-3 font-semibold">Time</th>
-                    <th className="text-left px-4 py-3 font-semibold">Price (W/GST)</th>
+                    <th className="text-left px-4 py-3 font-semibold">Price</th>
                     <th className="text-left px-4 py-3 font-semibold">{selectedResourceName || "Resource"}</th>
                   </tr>
                 </thead>
