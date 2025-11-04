@@ -134,21 +134,10 @@ const JobPostingForm = ({ onSuccess }: JobPostingFormProps) => {
   }), []);
 
   // Load benefits translations
+  // Note: benefits_translation table doesn't exist, using hardcoded benefits for now
   useEffect(() => {
-    const fetchBenefits = async () => {
-      try {
-        type BenRow = { benefit_key: string; label_en: string; label_my: string };
-        const { data, error } = await supabase
-          .from('benefits_translation')
-          .select('benefit_key,label_en,label_my');
-        if (error) throw error;
-        const rows = (data ?? []) as BenRow[];
-        setBenefitsRef(rows.map(r => ({ key: r.benefit_key, label_en: r.label_en, label_my: r.label_my })));
-      } catch (err) {
-        console.error('Error fetching benefits translations', err);
-      }
-    };
-    fetchBenefits();
+    // Placeholder - table doesn't exist yet in database
+    setBenefitsRef([]);
   }, []);
   
   const correctAnswer = verificationNumbers.num1 + verificationNumbers.num2;
