@@ -40,7 +40,7 @@ export const Navbar = React.memo(() => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2 relative z-50 md:ml-16">
               <span className="text-xl md:text-2xl font-anton font-normal text-gray-600">
-                MyanShops
+                YaYou
               </span>
             </Link>
           </div>
