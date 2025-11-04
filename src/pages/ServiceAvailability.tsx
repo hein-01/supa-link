@@ -5,6 +5,9 @@ import { format, startOfDay, endOfDay } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Minimal currency formatter – adjust currency if needed
 const currency = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
@@ -162,109 +165,144 @@ export default function ServiceAvailability(props: ServiceAvailabilityProps) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col">
-      {/* Header controls */}
-      <div className="max-w-5xl w-full mx-auto p-4">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Venue</label>
-          <div className="relative">
-            <select
-              className="w-full appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+    <div className="min-h-screen w-full bg-gradient-to-br from-background via-muted/20 to-background flex flex-col">
+      <div className="max-w-6xl w-full mx-auto p-4 md:p-8 space-y-6">
+        {/* Venue Selection Card */}
+        <Card className="shadow-lg border-primary/10">
+          <CardHeader>
+            <CardTitle className="text-foreground">Select Venue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select
               value={selectedResourceId || ""}
-              onChange={(e) => setSelectedResourceId(e.target.value)}
+              onValueChange={(value) => setSelectedResourceId(value)}
               disabled={loadingResources}
             >
-              {resources.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
-            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">▾</span>
-          </div>
-        </div>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose a venue" />
+              </SelectTrigger>
+              <SelectContent>
+                {resources.map((r) => (
+                  <SelectItem key={r.id} value={r.id}>
+                    {r.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
 
-        {/* Calendar */}
-        <div className="border rounded-md p-3">
-          <DayPicker
-            mode="single"
-            selected={selectedDate}
-            onSelect={(d) => d && setSelectedDate(d)}
-            showOutsideDays
-            weekStartsOn={1}
-            styles={{
-              caption: { textTransform: "capitalize" },
-              day: { borderRadius: 8 },
-              head_cell: { fontWeight: 600 },
-            }}
-          />
-        </div>
-      </div>
+        {/* Calendar Card - Centered */}
+        <Card className="shadow-xl border-primary/20">
+          <CardHeader>
+            <CardTitle className="text-center text-foreground">Choose Your Date</CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center pb-6">
+            <div className="inline-block">
+              <DayPicker
+                mode="single"
+                selected={selectedDate}
+                onSelect={(d) => d && setSelectedDate(d)}
+                showOutsideDays
+                weekStartsOn={1}
+                className="pointer-events-auto"
+                styles={{
+                  caption: { textTransform: "capitalize" },
+                  day: { borderRadius: 8 },
+                  head_cell: { fontWeight: 600 },
+                }}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Schedule table */}
-      <div className="max-w-5xl w-full mx-auto p-4 flex-1">
-        <h2 className="text-sm font-semibold tracking-wide text-gray-800 mb-2">
-          AVAILABLE SCHEDULE ({toDisplayHeader(selectedDate)})
-        </h2>
-
-        <div className="overflow-hidden rounded-md border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-100 text-gray-700">
-                <th className="text-left px-4 py-2 font-medium">Time</th>
-                <th className="text-left px-4 py-2 font-medium">Price (W/GST)</th>
-                <th className="text-left px-4 py-2 font-medium">{selectedResourceName || "Resource"}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loadingSlots && (
-                <tr>
-                  <td className="px-4 py-6 text-center text-gray-500" colSpan={3}>Loading schedule…</td>
-                </tr>
-              )}
-              {!loadingSlots && slots.length === 0 && (
-                <tr>
-                  <td className="px-4 py-6 text-center text-gray-500" colSpan={3}>No slots found for {toISODateOnly(selectedDate)}</td>
-                </tr>
-              )}
-              {!loadingSlots && slots.map((slot, idx) => {
-                const isSelected = selectedSlotIds.has(slot.id);
-                const icon = slot.is_booked ? (
-                  <XCircle className="h-5 w-5 text-red-500" />
-                ) : (
-                  <CheckCircle2 className={`h-5 w-5 ${isSelected ? "text-green-600" : "text-emerald-500"}`} />
-                );
-                return (
-                  <tr
-                    key={slot.id}
-                    className={`${idx % 2 ? "bg-white" : "bg-gray-50"} ${!slot.is_booked ? "cursor-pointer" : ""} ${isSelected ? "ring-2 ring-green-600" : ""}`}
-                    onClick={() => toggleSelect(slot)}
-                  >
-                    <td className="px-4 py-3">{formatTimeRange(slot.start_time, slot.end_time)}</td>
-                    <td className="px-4 py-3">{currency.format(slot.slot_price)}</td>
-                    <td className="px-4 py-3 flex items-center gap-2">
-                      {icon}
-                      <span>{selectedResourceName || "Resource"}</span>
-                    </td>
+        {/* Schedule Table Card */}
+        <Card className="shadow-lg border-primary/10">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-sm md:text-base font-semibold tracking-wide text-foreground">
+              AVAILABLE SCHEDULE ({toDisplayHeader(selectedDate)})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-primary/10 text-foreground border-b border-primary/20">
+                    <th className="text-left px-4 py-3 font-semibold">Time</th>
+                    <th className="text-left px-4 py-3 font-semibold">Price (W/GST)</th>
+                    <th className="text-left px-4 py-3 font-semibold">{selectedResourceName || "Resource"}</th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {loadingSlots && (
+                    <tr>
+                      <td className="px-4 py-8 text-center text-muted-foreground" colSpan={3}>
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full" />
+                          <span>Loading schedule…</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {!loadingSlots && slots.length === 0 && (
+                    <tr>
+                      <td className="px-4 py-8 text-center text-muted-foreground" colSpan={3}>
+                        No slots found for {toISODateOnly(selectedDate)}
+                      </td>
+                    </tr>
+                  )}
+                  {!loadingSlots && slots.map((slot, idx) => {
+                    const isSelected = selectedSlotIds.has(slot.id);
+                    const icon = slot.is_booked ? (
+                      <XCircle className="h-5 w-5 text-destructive" />
+                    ) : (
+                      <CheckCircle2 className={`h-5 w-5 transition-colors ${isSelected ? "text-primary" : "text-green-500"}`} />
+                    );
+                    return (
+                      <tr
+                        key={slot.id}
+                        className={`
+                          ${idx % 2 ? "bg-background" : "bg-muted/20"} 
+                          ${!slot.is_booked ? "cursor-pointer hover:bg-primary/5 transition-colors" : "opacity-60"} 
+                          ${isSelected ? "ring-2 ring-primary ring-inset bg-primary/10" : ""}
+                        `}
+                        onClick={() => toggleSelect(slot)}
+                      >
+                        <td className="px-4 py-4 font-medium">{formatTimeRange(slot.start_time, slot.end_time)}</td>
+                        <td className="px-4 py-4 font-semibold text-primary">{currency.format(slot.slot_price)}</td>
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-2">
+                            {icon}
+                            <span>{selectedResourceName || "Resource"}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
 
-        {error && (
-          <div className="mt-3 text-sm text-red-600">{error}</div>
-        )}
+            {error && (
+              <div className="p-4 bg-destructive/10 text-destructive text-sm rounded-b-lg">
+                {error}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Sticky footer / checkout */}
-      <div className="sticky bottom-0 left-0 right-0 bg-black text-white">
-        <div className="max-w-5xl w-full mx-auto flex items-center justify-between px-4 py-3">
-          <div>
-            <div className="text-xs tracking-wide text-gray-300">TOTAL CHARGES</div>
-            <div className="text-2xl font-semibold">{currency.format(total)}</div>
+      {/* Sticky footer / checkout with shadow */}
+      <div className="sticky bottom-0 left-0 right-0 bg-primary text-primary-foreground shadow-2xl border-t border-primary/20">
+        <div className="max-w-6xl w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4 md:px-8 py-4">
+          <div className="text-center sm:text-left">
+            <div className="text-xs tracking-wide opacity-90 uppercase">Total Charges</div>
+            <div className="text-2xl md:text-3xl font-bold">{currency.format(total)}</div>
           </div>
-          <button
-            className={`px-4 py-2 rounded-md text-black font-medium ${selectedSlotIds.size > 0 ? "bg-white" : "bg-gray-400 cursor-not-allowed"}`}
+          <Button
+            size="lg"
+            variant="secondary"
+            className="w-full sm:w-auto px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
             disabled={selectedSlotIds.size === 0}
             onClick={() => {
               // Placeholder booking handler – integrate your booking flow here
@@ -272,7 +310,7 @@ export default function ServiceAvailability(props: ServiceAvailabilityProps) {
             }}
           >
             BOOK NOW
-          </button>
+          </Button>
         </div>
       </div>
     </div>
