@@ -69,6 +69,7 @@ export default function ServiceAvailability(props: ServiceAvailabilityProps) {
   // From URL if available
   const url = new URL(location.href);
   const urlResourceId = url.searchParams.get("resourceId") || undefined;
+  const urlServiceId = url.searchParams.get("serviceId") || undefined;
   const urlDate = url.searchParams.get("date") || undefined; // YYYY-MM-DD
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
@@ -155,9 +156,67 @@ export default function ServiceAvailability(props: ServiceAvailabilityProps) {
     );
   }, [slots, selectedDate]);
 
-  // Step 1: fetch initial resource to learn business_id, then all sibling resources
+  // Step 1: load initial resources from either resourceId or serviceId
   useEffect(() => {
     async function loadResources() {
+      // If we have urlServiceId but no resourceId, fetch resources by serviceId
+      if (urlServiceId && !initialResourceId) {
+        setLoadingResources(true);
+        setError(null);
+        try {
+          const { data: serviceResources, error: servErr } = await supabase
+            .from("business_resources")
+            .select(`
+              id,
+              name,
+              business_id,
+              businesses:business_id (
+                owner_id
+              )
+            `)
+            .eq("service_id", parseInt(urlServiceId));
+
+          if (servErr) throw servErr;
+          if (!serviceResources || serviceResources.length === 0) {
+            throw new Error("No resources found for this service");
+          }
+
+          // Filter to only show resources owned by the current user
+          const userResources = serviceResources.filter(
+            (res: any) => res.businesses?.owner_id === user?.id
+          );
+
+          if (userResources.length === 0) {
+            throw new Error("You don't have any resources for this service");
+          }
+
+          // Get unique business IDs
+          const businessIds = Array.from(
+            new Set(userResources.map((res: any) => res.business_id))
+          );
+
+          // For simplicity, use the first business
+          const firstBusinessId = businessIds[0];
+          setBusinessId(firstBusinessId);
+
+          // Fetch all resources for this business
+          const allResources = await fetchResources(firstBusinessId);
+          setResources(allResources);
+
+          // Set the first resource as selected
+          if (allResources.length > 0) {
+            setSelectedResourceId(allResources[0].id);
+          }
+        } catch (e) {
+          const message = e instanceof Error ? e.message : "Failed to load resources";
+          setError(message);
+        } finally {
+          setLoadingResources(false);
+        }
+        return;
+      }
+
+      // Original logic for resourceId
       if (!initialResourceId) return;
       setLoadingResources(true);
       setError(null);
@@ -185,7 +244,7 @@ export default function ServiceAvailability(props: ServiceAvailabilityProps) {
       }
     }
     loadResources();
-  }, [initialResourceId]);
+  }, [initialResourceId, urlServiceId, user?.id]);
 
   // Step 2: load slots when resource/date changes — use shared helper
   useEffect(() => {
