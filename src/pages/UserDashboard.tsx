@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import BusinessForm from "@/components/BusinessForm";
 import UpgradeModal from "@/components/UpgradeModal";
 import RenterConfirmationScreen from "@/components/RenterConfirmationScreen";
+import { OwnerServicesTable } from "@/components/OwnerServicesTable";
 import { addDays, addHours, format } from "date-fns";
 import { formatDateWithOrdinal } from "@/lib/dateUtils";
 import { toast } from "@/hooks/use-toast";
@@ -724,6 +725,13 @@ export default function UserDashboard() {
                 </Button>
               </div>
             </div>
+
+            {/* Manage My Services & Schedule Section */}
+            {user && (
+              <div className="animate-slide-up mb-8">
+                <OwnerServicesTable userId={user.id} />
+              </div>
+            )}
 
             {/* My Reservations Section */}
             <div className="animate-slide-up">
