@@ -752,7 +752,13 @@ export default function UserDashboard() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {pendingBookings.filter(booking => booking.business_resources?.businesses?.owner_id !== user?.id).map((booking) => {
+                          {pendingBookings
+                            .filter(booking => booking.business_resources?.businesses?.owner_id !== user?.id)
+                            .sort((a, b) => {
+                              const statusOrder = { 'Pending': 0, 'Confirmed': 1, 'Rejected': 2 };
+                              return (statusOrder[a.status as keyof typeof statusOrder] ?? 3) - (statusOrder[b.status as keyof typeof statusOrder] ?? 3);
+                            })
+                            .map((booking) => {
                             const createdAt = new Date(booking.created_at);
                             const confirmationWindowEnd = addHours(createdAt, 2);
                             const now = new Date();
@@ -812,7 +818,13 @@ export default function UserDashboard() {
                                   }).format(Number(booking.payment_amount || 0))}
                                 </TableCell>
                                 <TableCell>
-                                  <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-xs font-medium">
+                                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                    booking.status === 'Confirmed' 
+                                      ? 'bg-green-600 text-white' 
+                                      : booking.status === 'Rejected'
+                                      ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
+                                      : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                                  }`}>
                                     {booking.status}
                                   </span>
                                 </TableCell>
@@ -845,7 +857,13 @@ export default function UserDashboard() {
 
                   {/* Mobile Card View */}
                   <div className="md:hidden space-y-4">
-                    {pendingBookings.filter(booking => booking.business_resources?.businesses?.owner_id !== user?.id).map((booking) => {
+                    {pendingBookings
+                      .filter(booking => booking.business_resources?.businesses?.owner_id !== user?.id)
+                      .sort((a, b) => {
+                        const statusOrder = { 'Pending': 0, 'Confirmed': 1, 'Rejected': 2 };
+                        return (statusOrder[a.status as keyof typeof statusOrder] ?? 3) - (statusOrder[b.status as keyof typeof statusOrder] ?? 3);
+                      })
+                      .map((booking) => {
                       const createdAt = new Date(booking.created_at);
                       const confirmationWindowEnd = addHours(createdAt, 2);
                       const now = new Date();
@@ -884,7 +902,13 @@ export default function UserDashboard() {
                                   {displayName}
                                 </div>
                               </div>
-                              <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-xs font-medium">
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                booking.status === 'Confirmed' 
+                                  ? 'bg-green-600 text-white' 
+                                  : booking.status === 'Rejected'
+                                  ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
+                                  : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                              }`}>
                                 {booking.status}
                               </span>
                             </div>
@@ -993,7 +1017,13 @@ export default function UserDashboard() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {pendingBookings.filter(booking => booking.business_resources?.businesses?.owner_id === user?.id).map((booking) => {
+                          {pendingBookings
+                            .filter(booking => booking.business_resources?.businesses?.owner_id === user?.id)
+                            .sort((a, b) => {
+                              const statusOrder = { 'Pending': 0, 'Confirmed': 1, 'Rejected': 2 };
+                              return (statusOrder[a.status as keyof typeof statusOrder] ?? 3) - (statusOrder[b.status as keyof typeof statusOrder] ?? 3);
+                            })
+                            .map((booking) => {
                             const createdAt = new Date(booking.created_at);
                             const confirmationWindowEnd = addHours(createdAt, 2);
                             const now = new Date();
@@ -1053,7 +1083,13 @@ export default function UserDashboard() {
                                   }).format(Number(booking.payment_amount || 0))}
                                 </TableCell>
                                 <TableCell>
-                                  <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-xs font-medium">
+                                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                    booking.status === 'Confirmed' 
+                                      ? 'bg-green-600 text-white' 
+                                      : booking.status === 'Rejected'
+                                      ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
+                                      : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                                  }`}>
                                     {booking.status}
                                   </span>
                                 </TableCell>
@@ -1097,7 +1133,13 @@ export default function UserDashboard() {
 
                   {/* Mobile Card View */}
                   <div className="md:hidden space-y-4">
-                    {pendingBookings.filter(booking => booking.business_resources?.businesses?.owner_id === user?.id).map((booking) => {
+                    {pendingBookings
+                      .filter(booking => booking.business_resources?.businesses?.owner_id === user?.id)
+                      .sort((a, b) => {
+                        const statusOrder = { 'Pending': 0, 'Confirmed': 1, 'Rejected': 2 };
+                        return (statusOrder[a.status as keyof typeof statusOrder] ?? 3) - (statusOrder[b.status as keyof typeof statusOrder] ?? 3);
+                      })
+                      .map((booking) => {
                       const createdAt = new Date(booking.created_at);
                       const confirmationWindowEnd = addHours(createdAt, 2);
                       const now = new Date();
@@ -1136,7 +1178,13 @@ export default function UserDashboard() {
                                   {displayName}
                                 </div>
                               </div>
-                              <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded text-xs font-medium">
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                booking.status === 'Confirmed' 
+                                  ? 'bg-green-600 text-white' 
+                                  : booking.status === 'Rejected'
+                                  ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
+                                  : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                              }`}>
                                 {booking.status}
                               </span>
                             </div>
